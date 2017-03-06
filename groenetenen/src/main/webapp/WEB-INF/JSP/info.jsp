@@ -4,14 +4,10 @@
 <!doctype html>
 <html lang='nl'>
 <head>
-<v:head title='Filiaal toevoegen' />
+<v:head title='Info' />
 </head>
 <body>
 	<v:menu />
-	<h1>Filiaal toevoegen</h1>
-	Hier komen later de invoervelden van het filiaal ...
-	<form method='post' action='<c:url value="/filialen"/>'>
-		<input type='submit' value='Toevoegen'>
-	</form>
+	<h1>Alles voor de tuin</h1>
 </body>
 </html>
