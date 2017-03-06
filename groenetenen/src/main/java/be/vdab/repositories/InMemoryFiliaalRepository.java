@@ -9,9 +9,12 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.concurrent.ConcurrentHashMap;
 
+import org.springframework.stereotype.Repository;
+
 import be.vdab.entities.Filiaal;
 import be.vdab.valueobjects.Adres;
 
+@Repository
 class InMemoryFiliaalRepository implements FiliaalRepository {
 	private final Map<Long, Filiaal> filialen = new ConcurrentHashMap<>();
 

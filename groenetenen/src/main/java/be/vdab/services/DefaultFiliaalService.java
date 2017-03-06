@@ -3,10 +3,13 @@ package be.vdab.services;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.stereotype.Service;
+
 import be.vdab.entities.Filiaal;
 import be.vdab.exceptions.FiliaalHeeftNogWerknemersException;
 import be.vdab.repositories.FiliaalRepository;
 
+@Service
 class DefaultFiliaalService implements FiliaalService {
 	private final FiliaalRepository filiaalRepository;
 
