@@ -14,6 +14,7 @@ import be.vdab.services.FiliaalService;
 @RequestMapping("/filialen")
 class FiliaalController {
 	private static final String FILIALEN_VIEW = "filialen/filialen"; // JSP
+	private static final String FILIAAL_VIEW = "filialen/filiaal";
 	private static final String TOEVOEGEN_VIEW = "filialen/toevoegen"; // JSP
 	private static final String REDIRECT_URL_NA_TOEVOEGEN = "redirect:/filialen";
 	private static final Logger LOGGER = Logger.getLogger(FiliaalController.class.getName());
@@ -34,6 +35,13 @@ class FiliaalController {
 	@GetMapping
 	ModelAndView findAll() {
 		return new ModelAndView(FILIALEN_VIEW, "filialen", filiaalService.findAll());
+	}
+
+	@GetMapping(params = "id")
+	ModelAndView read(long id) {
+		ModelAndView modelAndView = new ModelAndView(FILIAAL_VIEW);
+		filiaalService.read(id).ifPresent(filiaal -> modelAndView.addObject(filiaal));
+		return modelAndView;
 	}
 
 	@GetMapping("toevoegen")
