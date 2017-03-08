@@ -22,5 +22,8 @@
 			${filiaal.adres.gemeente}
 		</p>
 	</c:forEach>
+	<c:if test='${not empty param.fout}'>
+		<div class='fout'>${param.fout}</div>
+	</c:if>
 </body>
 </html>
