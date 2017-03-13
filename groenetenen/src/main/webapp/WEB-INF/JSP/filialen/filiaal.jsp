@@ -26,11 +26,11 @@
 				<dt>Waarde gebouw</dt>
 				<dd>
 					&euro;
-					<spring:eval expression='filiaal.waardeGebouw'/>
+					<spring:eval expression='filiaal.waardeGebouw' />
 				</dd>
 				<dt>Ingebruikname</dt>
 				<dd>
-					<spring:eval expression='filiaal.inGebruikName'/>
+					<spring:eval expression='filiaal.inGebruikName' />
 				</dd>
 			</dl>
 			<spring:url value='/filialen/{id}/verwijderen' var='verwijderURL'>
@@ -38,6 +38,12 @@
 			</spring:url>
 			<form action='${verwijderURL}' method='post'>
 				<input type='submit' value='Verwijderen'>
+			</form>
+			<spring:url value='/filialen/{id}/wijzigen' var='wijzigURL'>
+				<spring:param name='id' value='${filiaal.id}' />
+			</spring:url>
+			<form action='${wijzigURL}'>
+				<input type='submit' value='Wijzigen'>
 			</form>
 		</c:when>
 		<c:otherwise>

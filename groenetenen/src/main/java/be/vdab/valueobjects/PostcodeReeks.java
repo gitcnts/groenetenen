@@ -3,7 +3,9 @@ package be.vdab.valueobjects;
 import javax.validation.constraints.NotNull;
 
 import be.vdab.constraints.Postcode;
+import be.vdab.constraints.PostcodeReeksVanKleinerDanOfGelijkAanTot;
 
+@PostcodeReeksVanKleinerDanOfGelijkAanTot
 public class PostcodeReeks {
 
 //	private final static int MIN_POSTCODE = 1000;
@@ -19,19 +21,19 @@ public class PostcodeReeks {
 		return vanpostcode;
 	}
 
-	public void setVanpostcode(Integer vanpostcode) {
+//	public void setVanpostcode(Integer vanpostcode) {
 	//	valideer(vanpostcode);
-		this.vanpostcode = vanpostcode;
-	}
+//		this.vanpostcode = vanpostcode;
+//	}
 
 	public Integer getTotpostcode() {
 		return totpostcode;
 	}
 
-	public void setTotpostcode(Integer totpostcode) {
+//	public void setTotpostcode(Integer totpostcode) {
 	//	valideer(totpostcode);
-		this.totpostcode = totpostcode;
-	}
+//		this.totpostcode = totpostcode;
+//	}
 
 //	private void valideer(Integer postcode) {
 //		if (postcode < MIN_POSTCODE || postcode > MAX_POSTCODE) {
