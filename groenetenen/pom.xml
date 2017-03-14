@@ -76,6 +76,10 @@
 			<artifactId>jsoup</artifactId>
 			<version>[1.10,]</version>
 		</dependency>
+		<dependency> <!-- spring-jdbc -->
+			<groupId>org.springframework</groupId>
+			<artifactId>spring-jdbc</artifactId>
+		</dependency>
 	</dependencies>
 	<properties>
 		<maven.compiler.source>1.8</maven.compiler.source>
