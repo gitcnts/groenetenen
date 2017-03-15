@@ -32,7 +32,7 @@ public class Filiaal implements Serializable {
 	@Min(0)
 	@Digits(integer = 10, fraction = 2)
 	private BigDecimal waardeGebouw;
-	@DateTimeFormat(style = "S-")
+	@DateTimeFormat(style = "S-")	// dd-mm-jj
 	@NotNull
 	private LocalDate inGebruikName;
 	@Valid

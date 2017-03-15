@@ -24,7 +24,7 @@
 <form:errors path='adres.gemeente' delimiter=', ' />
 	</form:label>
 	<form:input path='adres.gemeente' required='required' maxlength='50' />
-	<form:label path='inGebruikName'>Ingebruikname:
+	<form:label path='inGebruikName'>Ingebruikname (dd-mm-jj):
 <form:errors path='inGebruikName' delimiter=', ' />
 	</form:label>
 	<form:input path='inGebruikName' required='required' />
