@@ -82,7 +82,7 @@ class FiliaalController {
 		return new ModelAndView(WIJZIGEN_VIEW).addObject(filiaal);
 	}
 
-	@GetMapping("{id}/verwijderd")
+	@GetMapping("{id}/verwijderd")	// extra
 	String deleted(String naam) {
 		return VERWIJDERD_VIEW;
 	}
@@ -133,7 +133,7 @@ class FiliaalController {
 		}
 	}
 
-	@PostMapping("{id}/wijzigen")
+	@PostMapping("{id}/wijzigen") //extra
 	String update(@Valid Filiaal filiaal, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return WIJZIGEN_VIEW;
