@@ -3,6 +3,8 @@ package be.vdab.services;
 import java.util.List;
 import java.util.Optional;
 
+import org.springframework.data.domain.Sort;
+
 import be.vdab.entities.Filiaal;
 import be.vdab.exceptions.FiliaalHeeftNogWerknemersException;
 import be.vdab.repositories.FiliaalRepository;
@@ -19,42 +21,46 @@ class DefaultFiliaalService implements FiliaalService {
 	@Override
 	@ModifyingTransactionalServiceMethod
 	public void create(Filiaal filiaal) {
-		filiaalRepository.create(filiaal);
+		filiaalRepository.save(filiaal);
 	}
 
 	@Override
 	public Optional<Filiaal> read(long id) {
-		return filiaalRepository.read(id);
+		return Optional.ofNullable(filiaalRepository.findOne(id));
 	}
 
 	@Override
 	@ModifyingTransactionalServiceMethod
 	public void update(Filiaal filiaal) {
-		filiaalRepository.update(filiaal);
+		filiaalRepository.save(filiaal);
 	}
 
 	@Override
 	@ModifyingTransactionalServiceMethod
 	public void delete(long id) {
-		if (filiaalRepository.findAantalWerknemers(id) != 0) {
-			throw new FiliaalHeeftNogWerknemersException();
+		Optional<Filiaal> optionalFiliaal = Optional.ofNullable(filiaalRepository.findOne(id));
+		;
+		if (optionalFiliaal.isPresent()) {
+			if (!optionalFiliaal.get().getWerknemers().isEmpty()) {
+				throw new FiliaalHeeftNogWerknemersException();
+			}
+			filiaalRepository.delete(id);
 		}
-		filiaalRepository.delete(id);
 	}
 
 	@Override
 	public List<Filiaal> findAll() {
-		return filiaalRepository.findAll();
+		return filiaalRepository.findAll(new Sort("naam"));
 	}
 
 	@Override
 	public long findAantalFilialen() {
-		return filiaalRepository.findAantalFilialen();
+		return filiaalRepository.count();
 	}
 
 	@Override
 	public List<Filiaal> findByPostcodeReeks(PostcodeReeks reeks) {
-		return filiaalRepository.findByPostcodeReeks(reeks);
+		return filiaalRepository.findByAdresPostcodeBetweenOrderByNaam(reeks.getVanpostcode(), reeks.getTotpostcode());
 	}
 
 }

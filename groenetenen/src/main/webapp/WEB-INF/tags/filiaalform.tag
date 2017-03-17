@@ -35,6 +35,7 @@
 	<div class='rij'>
 		<form:checkbox path='hoofdFiliaal' label='Hoofdfiliaal' />
 	</div>
+	<form:hidden path='versie' />
 	<input type='submit' value='${knopTekst}' id='submitknop'>
 	<script>
 		document.getElementById('filiaalform').onsubmit = function() {

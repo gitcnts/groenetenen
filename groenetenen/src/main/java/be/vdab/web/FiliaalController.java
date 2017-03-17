@@ -1,10 +1,10 @@
 package be.vdab.web;
 
 import java.util.List;
-import java.util.Optional;
 
 import javax.validation.Valid;
 
+import org.springframework.orm.ObjectOptimisticLockingFailureException;
 import org.springframework.stereotype.Controller;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.WebDataBinder;
@@ -24,9 +24,9 @@ import be.vdab.valueobjects.PostcodeReeks;
 @Controller
 @RequestMapping("/filialen")
 class FiliaalController {
-	private static final String FILIALEN_VIEW = "filialen/filialen"; // JSP
+	private static final String FILIALEN_VIEW = "filialen/filialen";
 	private static final String FILIAAL_VIEW = "filialen/filiaal";
-	private static final String TOEVOEGEN_VIEW = "filialen/toevoegen"; // JSP
+	private static final String TOEVOEGEN_VIEW = "filialen/toevoegen";
 	private static final String VERWIJDERD_VIEW = "filialen/verwijderd";
 	private static final String WIJZIGEN_VIEW = "filialen/wijzigen";
 	private static final String PER_POSTCODE_VIEW = "filialen/perpostcode";
@@ -36,28 +36,14 @@ class FiliaalController {
 	private static final String REDIRECT_URL_NA_VERWIJDEREN = "redirect:/filialen/{id}/verwijderd";
 	private static final String REDIRECT_URL_HEEFT_NOG_WERKNEMERS = "redirect:/filialen/{id}";
 	private static final String REDIRECT_URL_NA_WIJZIGEN = "redirect:/filialen";
-
-	// importeer Logger uit de package java.util.logging
-	// private static final Logger LOGGER =
-	// Logger.getLogger(FiliaalController.class.getName());
+	private static final String REDIRECT_URL_NA_LOCKING_EXCEPTION = "redirect:/filialen/{id}?optimisticlockingexception=true";
 
 	private final FiliaalService filiaalService;
 
 	FiliaalController(FiliaalService filiaalService) {
-		// Spring injecteert de parameter filiaalService met de bean die de
-		// interface
-		// FiliaalService implementeert: DefaultFiliaalService
 		this.filiaalService = filiaalService;
 	}
 
-	// Overbodig indien je aan bean validation doet
-	// @InitBinder("postcodeReeks")
-	// void initBinderPostcodeReeks(DataBinder dataBinder) {
-	// dataBinder.setRequiredFields("vanpostcode", "totpostcode");
-	// }
-
-	// Wel nodig indien je immutable command objects hebt (value objects)
-	// Andere invulling !!
 	@InitBinder("postcodeReeks")
 	void initBinderPostcodeReeks(WebDataBinder binder) {
 		binder.initDirectFieldAccess();
@@ -74,10 +60,12 @@ class FiliaalController {
 				filiaalService.findAantalFilialen());
 	}
 
-	@GetMapping("{id}")
-	ModelAndView read(@PathVariable long id) {
+	@GetMapping("{filiaal}")
+	ModelAndView read(@PathVariable Filiaal filiaal) {
 		ModelAndView modelAndView = new ModelAndView(FILIAAL_VIEW);
-		filiaalService.read(id).ifPresent(filiaal -> modelAndView.addObject(filiaal));
+		if (filiaal != null) {
+			modelAndView.addObject(filiaal);
+		}
 		return modelAndView;
 	}
 
@@ -86,13 +74,12 @@ class FiliaalController {
 		return new ModelAndView(TOEVOEGEN_VIEW).addObject(new Filiaal());
 	}
 
-	@GetMapping("{id}/wijzigen")
-	ModelAndView updateForm(@PathVariable long id) {
-		Optional<Filiaal> optionalFiliaal = filiaalService.read(id);
-		if (!optionalFiliaal.isPresent()) {
+	@GetMapping("{filiaal}/wijzigen")
+	ModelAndView updateForm(@PathVariable Filiaal filiaal) {
+		if (filiaal == null) {
 			return new ModelAndView(REDIRECT_URL_FILIAAL_NIET_GEVONDEN);
 		}
-		return new ModelAndView(WIJZIGEN_VIEW).addObject(optionalFiliaal.get());
+		return new ModelAndView(WIJZIGEN_VIEW).addObject(filiaal);
 	}
 
 	@GetMapping("{id}/verwijderd")
@@ -103,8 +90,6 @@ class FiliaalController {
 	@GetMapping("perpostcode")
 	ModelAndView findByPostcodeReeks() {
 		PostcodeReeks reeks = new PostcodeReeks();
-		// reeks.setVanpostcode(1000);
-		// reeks.setTotpostcode(9999);
 		return new ModelAndView(PER_POSTCODE_VIEW).addObject(reeks);
 	}
 
@@ -131,15 +116,16 @@ class FiliaalController {
 		return REDIRECT_URL_NA_TOEVOEGEN;
 	}
 
-	@PostMapping("{id}/verwijderen") // method na url aanroep in filiaal.jsp
-	String delete(@PathVariable long id, RedirectAttributes redirectAttributes) {
-		Optional<Filiaal> optionalFiliaal = filiaalService.read(id);
-		if (!optionalFiliaal.isPresent()) {
+	@PostMapping("{filiaal}/verwijderen") // method na url aanroep in
+											// filiaal.jsp
+	String delete(@PathVariable Filiaal filiaal, RedirectAttributes redirectAttributes) {
+		if (filiaal == null) {
 			return REDIRECT_URL_FILIAAL_NIET_GEVONDEN;
 		}
+		long id = filiaal.getId();
 		try {
 			filiaalService.delete(id);
-			redirectAttributes.addAttribute("id", id).addAttribute("naam", optionalFiliaal.get().getNaam());
+			redirectAttributes.addAttribute("id", id).addAttribute("naam", filiaal.getNaam());
 			return REDIRECT_URL_NA_VERWIJDEREN;
 		} catch (FiliaalHeeftNogWerknemersException ex) {
 			redirectAttributes.addAttribute("id", id).addAttribute("fout", "Filiaal heeft nog werknemers");
@@ -152,8 +138,12 @@ class FiliaalController {
 		if (bindingResult.hasErrors()) {
 			return WIJZIGEN_VIEW;
 		}
-		filiaalService.update(filiaal);
-		return REDIRECT_URL_NA_WIJZIGEN;
+		try {
+			filiaalService.update(filiaal);
+			return REDIRECT_URL_NA_WIJZIGEN;
+		} catch (ObjectOptimisticLockingFailureException ex) {
+			return REDIRECT_URL_NA_LOCKING_EXCEPTION;
+		}
 	}
 
 }
