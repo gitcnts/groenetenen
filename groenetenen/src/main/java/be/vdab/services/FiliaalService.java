@@ -22,4 +22,8 @@ public interface FiliaalService {
 
 	List<Filiaal> findByPostcodeReeks(PostcodeReeks reeks);
 
+	List<Filiaal> findNietAfgeschreven();
+
+	void afschrijven(List<Filiaal> filialen);
+
 }

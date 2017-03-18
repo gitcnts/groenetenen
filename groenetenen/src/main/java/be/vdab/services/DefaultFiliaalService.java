@@ -1,5 +1,6 @@
 package be.vdab.services;
 
+import java.math.BigDecimal;
 import java.util.List;
 import java.util.Optional;
 
@@ -63,6 +64,19 @@ class DefaultFiliaalService implements FiliaalService {
 	@Override
 	public List<Filiaal> findByPostcodeReeks(PostcodeReeks reeks) {
 		return filiaalRepository.findByAdresPostcodeBetweenOrderByNaam(reeks.getVanpostcode(), reeks.getTotpostcode());
+	}
+
+	@Override
+	public List<Filiaal> findNietAfgeschreven() {
+		return filiaalRepository.findByWaardeGebouwNot(BigDecimal.ZERO);
+	}
+
+	@Override
+	@ModifyingTransactionalServiceMethod
+	public void afschrijven(List<Filiaal> filialen) {
+		filialen.forEach(filiaal -> filiaal.afschrijven());
+		// wijziging property van entity binnen een transactie.
+		// JPA wijzigt dan automatisch het bijbehorende record bij de commit
 	}
 
 }

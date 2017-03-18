@@ -30,6 +30,7 @@ class FiliaalController {
 	private static final String VERWIJDERD_VIEW = "filialen/verwijderd";
 	private static final String WIJZIGEN_VIEW = "filialen/wijzigen";
 	private static final String PER_POSTCODE_VIEW = "filialen/perpostcode";
+	private static final String AFSCHRIJVEN_VIEW = "filialen/afschrijven";
 
 	private static final String REDIRECT_URL_NA_TOEVOEGEN = "redirect:/filialen";
 	private static final String REDIRECT_URL_FILIAAL_NIET_GEVONDEN = "redirect:/filialen";
@@ -37,6 +38,7 @@ class FiliaalController {
 	private static final String REDIRECT_URL_HEEFT_NOG_WERKNEMERS = "redirect:/filialen/{id}";
 	private static final String REDIRECT_URL_NA_WIJZIGEN = "redirect:/filialen";
 	private static final String REDIRECT_URL_NA_LOCKING_EXCEPTION = "redirect:/filialen/{id}?optimisticlockingexception=true";
+	private static final String REDIRECT_NA_AFSCHRIJVEN = "redirect:/";
 
 	private final FiliaalService filiaalService;
 
@@ -82,7 +84,7 @@ class FiliaalController {
 		return new ModelAndView(WIJZIGEN_VIEW).addObject(filiaal);
 	}
 
-	@GetMapping("{id}/verwijderd")	// extra
+	@GetMapping("{id}/verwijderd") // extra
 	String deleted(String naam) {
 		return VERWIJDERD_VIEW;
 	}
@@ -105,6 +107,12 @@ class FiliaalController {
 			}
 		}
 		return modelAndView;
+	}
+
+	@GetMapping("afschrijven")
+	ModelAndView afschrijvenForm() {
+		return new ModelAndView(AFSCHRIJVEN_VIEW, "filialen", filiaalService.findNietAfgeschreven())
+				.addObject(new AfschrijvenForm());
 	}
 
 	@PostMapping
@@ -133,7 +141,7 @@ class FiliaalController {
 		}
 	}
 
-	@PostMapping("{id}/wijzigen") //extra
+	@PostMapping("{id}/wijzigen") // extra
 	String update(@Valid Filiaal filiaal, BindingResult bindingResult) {
 		if (bindingResult.hasErrors()) {
 			return WIJZIGEN_VIEW;
@@ -144,6 +152,16 @@ class FiliaalController {
 		} catch (ObjectOptimisticLockingFailureException ex) {
 			return REDIRECT_URL_NA_LOCKING_EXCEPTION;
 		}
+	}
+
+	@PostMapping("afschrijven")
+	ModelAndView afschrijven(@Valid AfschrijvenForm afschrijvenForm, BindingResult bindingResult) {
+		if (bindingResult.hasErrors()) { // als de gebruiker geen filiaal
+											// selecteerde
+			return new ModelAndView(AFSCHRIJVEN_VIEW, "filialen", filiaalService.findNietAfgeschreven());
+		}
+		filiaalService.afschrijven(afschrijvenForm.getFilialen());
+		return new ModelAndView(REDIRECT_NA_AFSCHRIJVEN);
 	}
 
 }
