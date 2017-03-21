@@ -23,7 +23,7 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 @EnableWebMvc
 @ComponentScan
 @EnableSpringDataWebSupport
-class ControllersConfig extends WebMvcConfigurerAdapter {
+public class ControllersConfig extends WebMvcConfigurerAdapter {
 
 	@Bean
 	InternalResourceViewResolver viewResolver() {
