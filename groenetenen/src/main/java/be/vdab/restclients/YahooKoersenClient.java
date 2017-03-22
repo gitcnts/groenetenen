@@ -7,14 +7,14 @@ import java.util.logging.Logger;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
-import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.HttpClientErrorException;
 import org.springframework.web.client.RestTemplate;
 
 import be.vdab.exceptions.KanKoersNietLezenException;
 
 @Component
 class YahooKoersenClient implements KoersenClient {
-	
+
 	private final static Logger LOGGER = Logger.getLogger(YahooKoersenClient.class.getName());
 	private final URI yahooURL;
 	private final RestTemplate restTemplate;
@@ -29,10 +29,12 @@ class YahooKoersenClient implements KoersenClient {
 		try {
 			Query query = restTemplate.getForObject(yahooURL, Query.class);
 			return query.results.rate.rate;
-		} catch (RestClientException ex) {
+		} catch (HttpClientErrorException ex) {
 			LOGGER.log(Level.SEVERE, "kan koers niet lezen", ex);
+			System.out.println("getMostSpecificCause() = " + ex.getMostSpecificCause());
+			System.out.println("getResponseBodyAsString = " + ex.getResponseBodyAsString());
 			throw new KanKoersNietLezenException();
 		}
 	}
-	
+
 }
