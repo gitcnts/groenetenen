@@ -32,6 +32,7 @@ class FiliaalController {
 	private static final String WIJZIGEN_VIEW = "filialen/wijzigen";
 	private static final String PER_POSTCODE_VIEW = "filialen/perpostcode";
 	private static final String AFSCHRIJVEN_VIEW = "filialen/afschrijven";
+	private static final String PER_ID_VIEW = "filialen/perid";
 
 	private static final String REDIRECT_URL_NA_TOEVOEGEN = "redirect:/filialen";
 	private static final String REDIRECT_URL_FILIAAL_NIET_GEVONDEN = "redirect:/filialen";
@@ -114,6 +115,11 @@ class FiliaalController {
 	ModelAndView afschrijvenForm() {
 		return new ModelAndView(AFSCHRIJVEN_VIEW, "filialen", filiaalService.findNietAfgeschreven())
 				.addObject(new AfschrijvenForm());
+	}
+
+	@GetMapping("perid")
+	String findById() {
+		return PER_ID_VIEW;
 	}
 
 	@PostMapping
