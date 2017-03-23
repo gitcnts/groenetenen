@@ -27,6 +27,7 @@ import org.springframework.web.context.WebApplicationContext;
 
 import be.vdab.datasource.TestDataSourceConfig;
 import be.vdab.entities.Filiaal;
+import be.vdab.mail.MailConfig;
 import be.vdab.repositories.TestRepositoriesConfig;
 import be.vdab.restclients.RestClientsConfig;
 import be.vdab.services.FiliaalService;
@@ -39,7 +40,7 @@ import be.vdab.web.ControllersConfig;
 // beans
 // en hun dependencies
 @ContextConfiguration(classes = { TestDataSourceConfig.class, TestRepositoriesConfig.class, ServicesConfig.class,
-		ControllersConfig.class, RestControllersConfig.class, RestClientsConfig.class })
+		ControllersConfig.class, RestControllersConfig.class, RestClientsConfig.class, MailConfig.class })
 @WebAppConfiguration // zodat REST controllers in de IOC container HTTP requests
 						// kunnen verwerken
 @Transactional // zodat elke test één database transactie met aan het einde een
@@ -62,7 +63,7 @@ public class FiliaalRestControllerTest {
 		// rollback)
 		filiaal = new Filiaal("naam", true, BigDecimal.TEN, LocalDate.now(),
 				new Adres("straat", "huisNr", 1000, "gemeente"));
-		filiaalService.create(filiaal);
+		filiaalService.create(filiaal, "");
 		// je verbindt de MockMVC met de WebApplicationContext zodat de HTTP
 		// requests naar de REST // controllers in die WebApplicationContext
 		// worden gestuurd door Spring

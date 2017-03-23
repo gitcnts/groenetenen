@@ -24,12 +24,11 @@ class DefaultFiliaalService implements FiliaalService {
 		this.mailSender = mailSender;
 	}
 
-
 	@Override
 	@ModifyingTransactionalServiceMethod
-	public void create(Filiaal filiaal) {
+	public void create(Filiaal filiaal, String urlAlleFilialen) {
 		filiaalRepository.save(filiaal);
-		mailSender.nieuwFiliaalMail(filiaal);
+		mailSender.nieuwFiliaalMail(filiaal, urlAlleFilialen + '/' + filiaal.getId());
 	}
 
 	@Override

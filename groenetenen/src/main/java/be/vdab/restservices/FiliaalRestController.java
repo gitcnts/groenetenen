@@ -4,6 +4,7 @@ import java.net.URI;
 import java.util.HashSet;
 import java.util.Set;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.hateoas.EntityLinks;
@@ -67,8 +68,8 @@ class FiliaalRestController {
 
 	@PostMapping
 	@ResponseStatus(HttpStatus.CREATED)
-	HttpHeaders create(@RequestBody @Valid Filiaal filiaal) {
-		filiaalService.create(filiaal);
+	HttpHeaders create(@RequestBody @Valid Filiaal filiaal, HttpServletRequest request) {
+		filiaalService.create(filiaal, request.getRequestURL().toString());
 		HttpHeaders headers = new HttpHeaders();
 		Link link = entityLinks.linkToSingleResource(Filiaal.class, filiaal.getId());
 		headers.setLocation(URI.create(link.getHref()));
