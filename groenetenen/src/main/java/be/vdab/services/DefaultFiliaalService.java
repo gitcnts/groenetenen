@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Optional;
 
 import org.springframework.data.domain.Sort;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Repository;
 
 import be.vdab.entities.Filiaal;
@@ -81,6 +82,11 @@ class DefaultFiliaalService implements FiliaalService {
 		filialen.forEach(filiaal -> filiaal.afschrijven());
 		// wijziging property van entity binnen een transactie.
 		// JPA wijzigt dan automatisch het bijbehorende record bij de commit
+	}
+	@Override
+	@Scheduled(/*cron = "0 0 1 * * *"*/ fixedRate=60000) // test = om de minuut
+	public void aantalFilialenMail() {
+		mailSender.aantalFilialenMail(filiaalRepository.count());
 	}
 
 }

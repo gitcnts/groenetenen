@@ -48,4 +48,19 @@ class MailSenderImpl implements MailSender {
 		}
 	}
 
+	@Override
+	public void aantalFilialenMail(long aantal) {
+		try {
+			MimeMessage message = sender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(message);
+			helper.setTo(webmaster);
+			helper.setSubject("Aantal filialen");
+			helper.setText(String.format("Er zijn <strong>%d</strong> filialen.", aantal), true);
+			sender.send(message);
+		} catch (MessagingException | MailException ex) {
+			LOGGER.log(Level.SEVERE, "kan mail aantal filialen niet versturen", ex);
+			throw new RuntimeException("Kan mail aantal filialen niet versturen", ex);
+		}
+	}
+
 }
