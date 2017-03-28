@@ -6,6 +6,7 @@ import java.util.Optional;
 
 import org.springframework.data.domain.Sort;
 import org.springframework.scheduling.annotation.Scheduled;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Repository;
 
 import be.vdab.entities.Filiaal;
@@ -67,6 +68,7 @@ class DefaultFiliaalService implements FiliaalService {
 	}
 
 	@Override
+	@PreAuthorize("hasAuthority('manager')")
 	public List<Filiaal> findByPostcodeReeks(PostcodeReeks reeks) {
 		return filiaalRepository.findByAdresPostcodeBetweenOrderByNaam(reeks.getVanpostcode(), reeks.getTotpostcode());
 	}
@@ -84,7 +86,7 @@ class DefaultFiliaalService implements FiliaalService {
 		// JPA wijzigt dan automatisch het bijbehorende record bij de commit
 	}
 	@Override
-	@Scheduled(/*cron = "0 0 1 * * *"*/ fixedRate=60000) // test = om de minuut
+	@Scheduled(cron = "0 0 1 * * *" /*fixedRate=60000*/)
 	public void aantalFilialenMail() {
 		mailSender.aantalFilialenMail(filiaalRepository.count());
 	}
