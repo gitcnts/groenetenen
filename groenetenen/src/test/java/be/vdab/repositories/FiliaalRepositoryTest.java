@@ -14,11 +14,10 @@ import org.springframework.transaction.annotation.Transactional;
 
 import be.vdab.datasource.TestDataSourceConfig;
 import be.vdab.entities.Filiaal;
-import be.vdab.restclients.RestClientsConfig;
 import be.vdab.valueobjects.Adres;
 
 @RunWith(SpringRunner.class)
-@ContextConfiguration(classes = { TestRepositoriesConfig.class, TestDataSourceConfig.class, RestClientsConfig.class })
+@ContextConfiguration(classes = { TestRepositoriesConfig.class, TestDataSourceConfig.class })
 @Transactional // omringt elke test met een transactie, na de test rollback
 public class FiliaalRepositoryTest {
 
